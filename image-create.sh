@@ -29,7 +29,7 @@ SOFTWARE.
 # lan: enx0050b6bd37e7
 # wan: eno1
 
-# run with: curl -s https://raw.githubusercontent.com/oldt-ech/rnd2/main/image-create.sh | sudo bash
+# run with: curl -s -H "Cache-Control: no-cache" https://raw.githubusercontent.com/oldt-ech/rnd2/main/image-create.sh | sudo bash
 
 cat > image-create.sh << 'EOF'
 #!/bin/bash
