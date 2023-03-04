@@ -615,7 +615,7 @@ autoinstall:
   user-data:
     package_upgrade: true
     runcmd:
-	  - service ssh stop
+      - service ssh stop
       - iptables -t nat -F
       - iptables -t mangle -F
       - iptables -F
@@ -627,7 +627,7 @@ autoinstall:
       - ufw allow in on enx0050b6bd37e7
       - ufw disable
       - ufw enable
-	  - service ssh start
+      - service ssh start
 EOF
 
 read -p "-- unplug usb, plug it in again (just to be sure nuc isn't hiding it post-install)"
