@@ -21,13 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '
-
-
 #!/bin/bash
-set -Eeuo pipefail
-
-trap cleanup SIGINT SIGTERM ERR EXIT
-[[ ! -x "$(command -v date)" ]] && echo "💥 date command not found." && exit 1
 
 # user-data: https://cloudinit.readthedocs.io/en/latest/reference/examples.html
 # other: https://ubuntu.com/server/docs/install/autoinstall-reference
@@ -36,6 +30,13 @@ trap cleanup SIGINT SIGTERM ERR EXIT
 # wan: eno1
 
 # run with: curl -s https://raw.githubusercontent.com/oldt-ech/rnd2/main/image-create.sh | sudo bash
+
+cat > image-create.sh << 'EOF'
+#!/bin/bash
+set -Eeuo pipefail
+
+trap cleanup SIGINT SIGTERM ERR EXIT
+[[ ! -x "$(command -v date)" ]] && echo "💥 date command not found." && exit 1
 
 # export initial varibales 
 export_metadata(){
@@ -71,53 +72,6 @@ export_metadata(){
 
 # help text
 usage() {
-        cat <<EOF
-Usage: image-create.sh [-h] [-v] [-n] [-a] [-e] [-u user-data-file] [-m meta-data-file] [-k] [-c] [-r] [-s source-iso-file] [-d destination-iso-file]
-
-💁 This script will create fully-automated Ubuntu installation media.
-
-Available options:
-
--h, --help              Print this help and exit
-
--v, --verbose           Print script debug info
-
--n, --code-name         The Code Name of the Ubuntu release to download (bionic, focal, jammy etc...)
-
--a, --all-in-one        Bake user-data and meta-data into the generated ISO. By default you will
-                        need to boot systems with a CIDATA volume attached containing your
-                        autoinstall user-data and meta-data files.
-                        For more information see: https://ubuntu.com/server/docs/install/autoinstall-quickstart
-
--e, --use-hwe-kernel    Force the generated ISO to boot using the hardware enablement (HWE) kernel. Not supported
-                        by early Ubuntu 20.04 release ISOs.
-
--u, --user-data         Path to user-data file. Required if using -a
-
--m, --meta-data         Path to meta-data file. Will be an empty file if not specified and using -a
-
--x, --extra-files       Specifies a folder whos contents will be copied into the /media directroy of the squashfs.
-                        If not set, nothing is copied
-
--k, --no-verify         Disable GPG verification of the source ISO file. By default SHA256SUMS-<current date> and
-                        SHA256SUMS-<current date>.gpg files in the script directory will be used to verify the authenticity and integrity
-                        of the source ISO file. If they are not present the latest daily SHA256SUMS will be
-                        downloaded and saved in the script directory. The Ubuntu signing key will be downloaded and
-                        saved in a new keyring in the script directory.
-
--r, --use-release-iso   Use the current release ISO instead of the daily ISO. The file will be used if it already
-                        exists.
-
--s, --source            Source ISO file path. By default the latest daily ISO for Ubuntu server will be downloaded
-                        and saved as <script directory>/ubuntu-original-<current date>.iso
-                        That file will be used by default if it already exists.
-
--l, --legacy            When using the -s, --source flags you must specify the --legacy flag if the source image is based on isolinux.
-                        Otherwise, eltorito usage is assumed 
-
--d, --destination       Destination ISO file. By default <script directory>/ubuntu-autoinstall-<current date>.iso will be
-                        created, overwriting any existing file.
-EOF
         exit
 }
 
@@ -516,7 +470,7 @@ main(){
         export_metadata
         create_tmp_dirs
 
-        parse_params "-k -r -a -u custom-user-data -n jammy -d ubuntu.iso"
+        parse_params "$@"
 
         if [ ! -f "$SOURCE_ISO" ]; then
          
@@ -551,6 +505,9 @@ main(){
         reassemble_iso
         cleanup
 }
+
+main "$@"
+EOF
 
 cat > custom-user-data << 'EOF'
 #cloud-config
@@ -628,7 +585,8 @@ EOF
 
 sudo apt install -y xorriso
 read -p "-- unplug usb, plug it in again (just to be sure nuc isn't hiding it post-install)"
-main
-sudo dd bs=4M if=ubuntu.iso of=/dev/sdb status=progress oflag=sync
+chmod +x image-create.sh
+source image-create.sh -k -r -a -u custom-user-data -n jammy -d /tmp/ubuntu.iso
+sudo dd bs=4M if=/tmp/ubuntu.iso of=/dev/sdb status=progress oflag=sync
 read -p "-- rebooting"
 sudo shutdown -r now
