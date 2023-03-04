@@ -22,6 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '
 
+
+#!/bin/bash
+set -Eeuo pipefail
+
+trap cleanup SIGINT SIGTERM ERR EXIT
+[[ ! -x "$(command -v date)" ]] && echo "💥 date command not found." && exit 1
+
 # user-data: https://cloudinit.readthedocs.io/en/latest/reference/examples.html
 # other: https://ubuntu.com/server/docs/install/autoinstall-reference
 # advanced cfg example: https://github.com/cloudymax/pxeless/blob/develop/user-data.advanced
@@ -29,13 +36,6 @@ SOFTWARE.
 # wan: eno1
 
 # run with: curl -s https://raw.githubusercontent.com/oldt-ech/rnd2/main/image-create.sh | sudo bash
-
-cat > image-create.sh << 'EOF'
-#!/bin/bash
-set -Eeuo pipefail
-
-trap cleanup SIGINT SIGTERM ERR EXIT
-[[ ! -x "$(command -v date)" ]] && echo "💥 date command not found." && exit 1
 
 # export initial varibales 
 export_metadata(){
@@ -516,7 +516,7 @@ main(){
         export_metadata
         create_tmp_dirs
 
-        parse_params "$@"
+        parse_params "-k -r -a -u custom-user-data -n jammy -d ubuntu.iso"
 
         if [ ! -f "$SOURCE_ISO" ]; then
          
@@ -551,9 +551,6 @@ main(){
         reassemble_iso
         cleanup
 }
-
-main "$@"
-EOF
 
 cat > custom-user-data << 'EOF'
 #cloud-config
@@ -631,8 +628,7 @@ EOF
 
 sudo apt install -y xorriso
 read -p "-- unplug usb, plug it in again (just to be sure nuc isn't hiding it post-install)"
-chmod +x image-create.sh
-bash image-create.sh -k -r -a -u custom-user-data -n jammy -d ubuntu.iso
+main
 sudo dd bs=4M if=ubuntu.iso of=/dev/sdb status=progress oflag=sync
 read -p "-- rebooting"
 sudo shutdown -r now
