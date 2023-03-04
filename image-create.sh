@@ -586,7 +586,7 @@ EOF
 sudo apt install -y xorriso
 read -p "-- unplug usb, plug it in again (just to be sure nuc isn't hiding it post-install)"
 chmod +x image-create.sh
-source image-create.sh -k -r -a -u custom-user-data -n jammy -d /tmp/ubuntu.iso
+bash image-create.sh -k -r -a -u custom-user-data -n jammy -d /tmp/ubuntu.iso
 sudo dd bs=4M if=/tmp/ubuntu.iso of=/dev/sdb status=progress oflag=sync
 read -p "-- rebooting"
 sudo shutdown -r now
