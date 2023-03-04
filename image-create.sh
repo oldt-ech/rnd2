@@ -543,7 +543,87 @@ main(){
         cleanup
 }
 
-sudo apt install unzip xorriso
+sudo apt install -y xorriso
 
 main "$@"
 
+cat > custom-user-data << 'EOF'
+#cloud-config
+autoinstall:
+  version: 1
+  apt:
+    disable_components: []
+    geoip: true
+    preserve_sources_list: false
+    primary:
+    - arches:
+      - amd64
+      - i386
+      uri: http://ca.archive.ubuntu.com/ubuntu
+    - arches:
+      - default
+      uri: http://ports.ubuntu.com/ubuntu-ports
+  drivers:
+    install: false
+  identity:
+    hostname: nuc
+    password: $6$HQdv5YdjhUfGBB4a$Oak30.HHHv8R./cRHit6XrVFWWsBOyRTedMgHYX905FS/n8pnDu/CLT4lAEbZhO/u2gsSS2M.FGT7YiZRENPl/
+    realname: ubuntu
+    username: ubuntu
+  kernel:
+    package: linux-generic
+  keyboard:
+    layout: us
+    toggle: null
+    variant: ''
+  locale: en_US.UTF-8
+  network:
+    version: 2
+    ethernets:
+      eno1:
+        dhcp4: yes
+        optional: true
+        nameservers:
+          addresses: [1.1.1.1, 1.0.0.1]
+        link-local: []
+      enx0050b6bd37e7:
+        dhcp4: yes
+        optional: true
+        nameservers:
+          addresses: [1.1.1.1, 1.0.0.1]
+        link-local: []
+      version: 2
+      wifis: {}
+  source:
+    id: ubuntu-server
+    search_drivers: false
+  ssh:
+    allow-pw: false
+    authorized-keys: [ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDKITq4tVb8Odcc9oKrNHn5T1Q7Y6MkgdyiHHbXGsB2Ui4DR6Vas6VmclNrEl4/OmwmaGBMoSnqlzvFh4aOE3i0ht3OMppHbISWVlJHWGSVsCkbBLeTEsSofySm3fYafDOsxo/fepRO8Y6vAKej/gclghs8l//3dC/fWfQI2EXUdUOJ0R3vYjbxp04OxBjxFptLujBmx/OZusZCo2WE28iJK7CYVnB69mpfakoyx8nmYPktGnVH5oL5ixIm42xeG/2wbBKoGvyZg0lsZU+A64SQuprJy3MhCSLBkwLByIrK56GoHDiUFeh6VqS1dUEGquHN5u3+hDzxpscmK4VJ6Vk3x41pqhMn/l7vXvhhX9nXN/mqLYy5ZkvyPwmhOUh4EfDBGqPw5tzKrqZaHRBK/6/XTS4Pe49FOxDJS+OOpTd6uCOnKrmBfEXHwOheCHRo5640+OEXRdu8ZwC/ws1BzqRhZCfc1FAyEdT37bN7KmiUzceA457L0RZdSOlM49m/f3E=]
+    install-server: true
+  timezone: geoip
+  updates: security
+  user-data:
+    package_upgrade: true
+    runcmd:
+	  - service ssh stop
+      - iptables -t nat -F
+      - iptables -t mangle -F
+      - iptables -F
+      - iptables -X
+      - ufw reset
+      - ufw default deny incoming
+      - ufw default deny routed
+      - ufw default allow outgoing
+      - ufw allow in on enx0050b6bd37e7
+      - ufw disable
+      - ufw enable
+	  - service ssh start
+EOF
+
+read -p "-- unplug usb, plug it in again (just to be sure nuc isn't hiding it post-install)"
+chmod +x image-create.sh
+bash image-create.sh -r -a -u custom-user-data -n jammy -d ~/ubuntu.iso
+dd bs=4M if=~/ubuntu.iso of=/dev/sdb status=progress oflag=sync;
+read -p "-- rebooting"
+shutdown -r now
