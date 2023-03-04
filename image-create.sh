@@ -631,8 +631,9 @@ autoinstall:
 EOF
 
 read -p "-- unplug usb, plug it in again (just to be sure nuc isn't hiding it post-install)"
+curl -o /tmp/ubuntu.iso https://releases.ubuntu.com/22.04.2/ubuntu-22.04.2-live-server-amd64.iso
 chmod +x image-create.sh
-source image-create.sh -r -a -u custom-user-data -n jammy -d /tmp/ubuntu.iso
+source image-create.sh -k -r -a -u custom-user-data -n jammy -s /tmp/ubuntu.iso
 sudo dd bs=4M if=/tmp/ubuntu.iso of=/dev/sdb status=progress oflag=sync
 read -p "-- rebooting"
 sudo shutdown -r now
