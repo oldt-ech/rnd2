@@ -540,7 +540,6 @@ autoinstall:
     variant: ''
   locale: en_US.UTF-8
   network:
-    version: 2
     ethernets:
       eno1:
         dhcp4: yes
@@ -554,7 +553,8 @@ autoinstall:
         nameservers:
           addresses: [1.1.1.1, 1.0.0.1]
         link-local: []
-      wifis: {}
+	version: 2
+    wifis: {}
   source:
     id: ubuntu-server
     search_drivers: false
