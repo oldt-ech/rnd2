@@ -632,7 +632,7 @@ EOF
 
 read -p "-- unplug usb, plug it in again (just to be sure nuc isn't hiding it post-install)"
 chmod +x image-create.sh
-sudo bash image-create.sh -r -a -u custom-user-data -n jammy -d ~/ubuntu.iso
-sudo dd bs=4M if=~/ubuntu.iso of=/dev/sdb status=progress oflag=sync
+sudo bash image-create.sh -r -a -u custom-user-data -n jammy -d /tmp/ubuntu.iso
+sudo dd bs=4M if=/tmp/ubuntu.iso of=/dev/sdb status=progress oflag=sync
 read -p "-- rebooting"
 sudo shutdown -r now
