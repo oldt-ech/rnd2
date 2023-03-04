@@ -554,7 +554,6 @@ autoinstall:
         nameservers:
           addresses: [1.1.1.1, 1.0.0.1]
         link-local: []
-      version: 2
       wifis: {}
   source:
     id: ubuntu-server
@@ -565,6 +564,22 @@ autoinstall:
     install-server: true
   timezone: geoip
   updates: security
+  user-data:
+    package_upgrade: true
+    runcmd:
+      - service ssh stop
+      - iptables -t nat -F
+      - iptables -t mangle -F
+      - iptables -F
+      - iptables -X
+      - ufw reset
+      - ufw default deny incoming
+      - ufw default deny routed
+      - ufw default allow outgoing
+      - ufw allow in on enx0050b6bd37e7
+      - ufw disable
+      - ufw enable
+      - service ssh start
 EOF
 
 sudo apt install -y xorriso
