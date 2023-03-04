@@ -22,6 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '
 
+# user-data: https://cloudinit.readthedocs.io/en/latest/reference/examples.html
+# other: https://ubuntu.com/server/docs/install/autoinstall-reference
+# advanced cfg example: https://github.com/cloudymax/pxeless/blob/develop/user-data.advanced
+# lan: enx0050b6bd37e7
+# wan: eno1
+
+# run with: curl -s https://raw.githubusercontent.com/oldt-ech/rnd2/main/image-create.sh | sudo bash
+
+
 #!/bin/bash
 set -Eeuo pipefail
 
