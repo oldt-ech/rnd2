@@ -587,8 +587,7 @@ autoinstall:
 	  - apt install -y update-notifier-common unattended-upgrade
 	  - dpkg-reconfigure -pmedium unattended-upgrades
 	  - sed -i 's/\/\/Unattended-Upgrade::Automatic-Reboot "false";/Unattended-Upgrade::Automatic-Reboot "true";/g' /etc/apt/apt.conf.d/50unattended-upgrades
-	  - sed -i 's/\/\/Unattended-Upgrade::Remove-Unused-Dependencies "false";/Unattended-Upgrade::Remove-Unused-Dependencies "true";/g' /
-etc/apt/apt.conf.d/50unattended-upgrades
+	  - sed -i 's/\/\/Unattended-Upgrade::Remove-Unused-Dependencies "false";/Unattended-Upgrade::Remove-Unused-Dependencies "true";/g' /etc/apt/apt.conf.d/50unattended-upgrades
 	  - sed -i 's/\/\/Unattended-Upgrade::Automatic-Reboot-WithUsers "true";/Unattended-Upgrade::Automatic-Reboot-WithUsers "true";/g' /etc/apt/apt.conf.d/50unattended-upgrades
 	  - sed -i 's/\/\/Acquire::http::Dl-Limit "70";/Acquire::http::Dl-Limit "8000";/g' /etc/apt/apt.conf.d/50unattended-upgrades
 	  - sed -i 's/\/\/Unattended-Upgrade::InstallOnShutdown "false";/Unattended-Upgrade::InstallOnShutdown "false";/g' /etc/apt/apt.conf.d/50unattended-upgrades
