@@ -567,7 +567,9 @@ autoinstall:
   user-data:
     package_upgrade: true
     runcmd:
-      - curl -s -H "Cache-Control: no-cache" https://raw.githubusercontent.com/oldt-ech/rnd2/main/image-nuc-base-postinstall.sh | sudo bash
+      - curl -s https://raw.githubusercontent.com/oldt-ech/rnd2/main/image-nuc-base-postinstall.sh -o /home/ubuntu/image-nuc-base-postinstall.sh
+      - chmod +x /home/ubuntu/image-nuc-base-postinstall.sh
+      - bash /home/ubuntu/image-nuc-base-postinstall.sh
 EOF
 
 sudo apt install -y xorriso
