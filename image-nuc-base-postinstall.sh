@@ -14,7 +14,6 @@ ufw disable
 sed -i 's/IPV6=yes/IPV6=no/g' /etc/default/ufw
 sed -i 's/-A ufw-before-input -p udp -d 224.0.0.251 --dport 5353 -j ACCEPT/#-A ufw-before-input -p udp -d 224.0.0.251 --dport 5353 -j ACCEPT/g' /etc/ufw/before.rules
 sed -i 's/-A ufw-before-input -p udp -d 239.255.255.250 --dport 1900 -j ACCEPT/#-A ufw-before-input -p udp -d 239.255.255.250 --dport 1900 -j ACCEPT/g' /etc/ufw/before.rules
-echo "y" | sudo ufw enable
 sudo ufw enable
 service ssh start
 apt install -y update-notifier-common unattended-upgrade

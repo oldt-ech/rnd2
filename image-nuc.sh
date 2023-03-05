@@ -567,7 +567,7 @@ autoinstall:
   user-data:
     package_upgrade: true
     runcmd:
-      - curl -s https://raw.githubusercontent.com/oldt-ech/rnd2/main/image-nuc-base-postinstall.sh -o /home/ubuntu/image-nuc-base-postinstall.sh
+      - curl -s https://raw.githubusercontent.com/oldt-ech/rnd2/main/image-nuc-base-postinstall.sh?ok -o /home/ubuntu/image-nuc-base-postinstall.sh
       - chmod +x /home/ubuntu/image-nuc-base-postinstall.sh
       - bash /home/ubuntu/image-nuc-base-postinstall.sh
 EOF
