@@ -25,3 +25,4 @@ sed -i 's/\/\/Acquire::http::Dl-Limit "70";/Acquire::http::Dl-Limit "8000";/g' /
 sed -i 's/\/\/Unattended-Upgrade::InstallOnShutdown "false";/Unattended-Upgrade::InstallOnShutdown "false";/g' /etc/apt/apt.conf.d/50unattended-upgrades
 sed -i 's/\/\/Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";/Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";/g' /etc/apt/apt.conf.d/50unattended-upgrades
 sed -i 's/\/\/Unattended-Upgrade::Remove-New-Unused-Dependencies "true";/Unattended-Upgrade::Remove-New-Unused-Dependencies "true";/g' /etc/apt/apt.conf.d/50unattended-upgrades
+shutdown -r now
