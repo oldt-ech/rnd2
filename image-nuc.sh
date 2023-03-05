@@ -572,13 +572,17 @@ autoinstall:
       - iptables -t mangle -F
       - iptables -F
       - iptables -X
-      - ufw reset
+      - echo "y" | ufw reset
       - ufw default deny incoming
       - ufw default deny routed
       - ufw default allow outgoing
       - ufw allow in on enx0050b6bd37e7
       - ufw disable
-      - ufw enable
+	  - sed -i 's/IPV6=yes/IPV6=no/g' /etc/default/ufw
+	  - sed -i 's/-A ufw-before-input -p udp -d 224.0.0.251 --dport 5353 -j ACCEPT/#-A ufw-before-input -p udp -d 224.0.0.251 --dport 5353 -j ACCEPT/g' /etc/ufw/before.rules
+	  - sed -i 's/-A ufw-before-input -p udp -d 239.255.255.250 --dport 1900 -j ACCEPT/#-A ufw-before-input -p udp -d 239.255.255.250 --dport 1900 -j ACCEPT/g' /etc/ufw/before.rules
+      - echo "y" | sudo ufw enable
+	  - sudo ufw enable
       - service ssh start
 EOF
 
