@@ -29,6 +29,8 @@ SOFTWARE.
 # lan: enx0050b6bd37e7
 # wan: eno1
 
+# cloud init validator: cloud-init schema --config-file conf.yaml
+
 # run with: curl -s -H "Cache-Control: no-cache" https://raw.githubusercontent.com/oldt-ech/rnd2/main/image-nuc.sh | sudo bash
 
 cat > image-create.sh << 'EOF'
@@ -553,7 +555,7 @@ autoinstall:
         nameservers:
           addresses: [1.1.1.1, 1.0.0.1]
         link-local: []
-	version: 2
+    version: 2
     wifis: {}
   source:
     id: ubuntu-server
